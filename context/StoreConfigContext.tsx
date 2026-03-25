@@ -115,16 +115,16 @@ const DEFAULT_CONFIG: StoreConfig = {
   ],
 
   products: [
-    { id: 1, name: 'Vida de Cowboy', slug: 'cnm013-vida-de-cowboy', sku: 'CNM013', color: 'Cáqui', price: 129.90, stock: 8, category: 'bones', featured: true, inLookBuilder: true, active: true },
-    { id: 2, name: 'CNM018', slug: 'cnm018', sku: 'CNM018', color: 'Preto', price: 139.90, stock: 15, category: 'bones', featured: true, inLookBuilder: true, active: true },
-    { id: 3, name: 'CNM017', slug: 'cnm017', sku: 'CNM017', color: 'Verde', price: 139.90, stock: 5, category: 'bones', featured: true, inLookBuilder: true, active: true },
-    { id: 4, name: 'Laço Comprido', slug: 'laco-comprido', sku: 'CNM015', color: 'Marrom', price: 129.90, stock: 12, category: 'bones', featured: true, inLookBuilder: true, active: true },
-    { id: 5, name: 'CNM014', slug: 'cnm014', sku: 'CNM014', color: 'Areia', price: 119.90, stock: 20, category: 'bones', featured: true, inLookBuilder: true, active: true },
-    { id: 6, name: 'CNM016', slug: 'cnm016', sku: 'CNM016', color: 'Preto Total', price: 149.90, stock: 3, category: 'bones', featured: false, inLookBuilder: false, active: true },
-    { id: 7, name: 'Boiadeiro', slug: 'boiadeiro', sku: 'CNM019', color: 'Camuflado', price: 159.90, stock: 7, category: 'bones', featured: false, inLookBuilder: false, active: true },
-    { id: 8, name: 'Caçador', slug: 'cacador', sku: 'CNM020', color: 'Marrom', price: 129.90, stock: 10, category: 'bones', featured: false, inLookBuilder: false, active: true },
-    { id: 9, name: 'Adesivo Pack Vol.1', slug: 'adesivo-pack-vol1', sku: 'ADH001', price: 29.90, stock: 50, category: 'adesivos', featured: false, inLookBuilder: false, active: true },
-    { id: 10, name: 'Mato Selvagem', slug: 'mato-selvagem', sku: 'ADH002', price: 19.90, stock: 30, category: 'adesivos', featured: false, inLookBuilder: false, active: true },
+    { id: 1, name: 'Vida de Cowboy', slug: 'cnm013-vida-de-cowboy', sku: 'CNM013', color: 'Cáqui', price: 129.90, stock: 8, category: 'bones', image: '/images/hat-1.jpg', featured: true, inLookBuilder: true, active: true },
+    { id: 2, name: 'CNM018', slug: 'cnm018', sku: 'CNM018', color: 'Preto', price: 139.90, stock: 15, category: 'bones', image: '/images/hat-2.jpg', featured: true, inLookBuilder: true, active: true },
+    { id: 3, name: 'CNM017', slug: 'cnm017', sku: 'CNM017', color: 'Verde', price: 139.90, stock: 5, category: 'bones', image: '/images/hat-3.jpg', featured: true, inLookBuilder: true, active: true },
+    { id: 4, name: 'Laço Comprido', slug: 'laco-comprido', sku: 'CNM015', color: 'Marrom', price: 129.90, stock: 12, category: 'bones', image: '/images/hat-4.jpg', featured: true, inLookBuilder: true, active: true },
+    { id: 5, name: 'CNM014', slug: 'cnm014', sku: 'CNM014', color: 'Areia', price: 119.90, stock: 20, category: 'bones', image: null, featured: true, inLookBuilder: true, active: true },
+    { id: 6, name: 'CNM016', slug: 'cnm016', sku: 'CNM016', color: 'Preto Total', price: 149.90, stock: 3, category: 'bones', image: null, featured: false, inLookBuilder: false, active: true },
+    { id: 7, name: 'Boiadeiro', slug: 'boiadeiro', sku: 'CNM019', color: 'Camuflado', price: 159.90, stock: 7, category: 'bones', image: null, featured: false, inLookBuilder: false, active: true },
+    { id: 8, name: 'Caçador', slug: 'cacador', sku: 'CNM020', color: 'Marrom', price: 129.90, stock: 10, category: 'bones', image: null, featured: false, inLookBuilder: false, active: true },
+    { id: 9, name: 'Adesivo Pack Vol.1', slug: 'adesivo-pack-vol1', sku: 'ADH001', price: 29.90, stock: 50, category: 'adesivos', image: null, featured: false, inLookBuilder: false, active: true },
+    { id: 10, name: 'Mato Selvagem', slug: 'mato-selvagem', sku: 'ADH002', price: 19.90, stock: 30, category: 'adesivos', image: null, featured: false, inLookBuilder: false, active: true },
   ],
 
   lookBuilderSlots: [
@@ -149,7 +149,8 @@ const DEFAULT_CONFIG: StoreConfig = {
   footerTagline: 'Nascidos no campo. Criados com estilo. Bonés e acessórios para quem vive com autenticidade.',
   instagramUrl: 'https://www.instagram.com/criadosnomato',
   contactUrl: 'https://criadosnomato.com.br/contato/',
-
+  // Images
+  manifestoImage: '/images/manifesto.jpg',
   colorGold: '#C8922A',
   colorEarth: '#0D0B08',
   colorSand: '#F5EDD8',
