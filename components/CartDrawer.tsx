@@ -51,7 +51,7 @@ export default function CartDrawer() {
           ) : state.items.map(item => (
             <div key={item.id} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
               <div style={{ width: 80, height: 80, background: '#1A1512', flexShrink: 0, overflow: 'hidden', borderRadius: 2 }}>
-                <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+                <img src={item.image || undefined} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 500, marginBottom: '0.25rem' }}>{item.name}</div>
