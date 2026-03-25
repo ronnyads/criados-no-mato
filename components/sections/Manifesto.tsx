@@ -57,7 +57,7 @@ export default function Manifesto() {
           
           {/* Editorial Image (if uploaded) */}
           {config.manifestoImage && (
-            <div className="reveal" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', borderRadius: 4, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', borderRadius: 4, overflow: 'hidden' }}>
               <img 
                 src={config.manifestoImage} 
                 alt="Manifesto" 

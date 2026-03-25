@@ -12,7 +12,8 @@ export default function ColecaoPage() {
   const [cat, setCat] = useState<'todos' | 'bones' | 'adesivos'>('todos');
   const sectionRef = useRef<HTMLElement>(null);
 
-  const filtered = cat === 'todos' ? config.products : config.products.filter(p => p.category === cat);
+  const activeProducts = config.products.filter(p => p.active);
+  const filtered = cat === 'todos' ? activeProducts : activeProducts.filter(p => p.category === cat);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {

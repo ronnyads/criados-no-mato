@@ -12,7 +12,7 @@ export default function FeaturedProducts() {
   const sectionRef = useRef<HTMLElement>(null);
   
   // Pegamos apenas produtos que estão ativos e marcados como destaque 
-  const products = config.products.filter(p => p.featured);
+  const products = config.products.filter(p => p.featured && p.active);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {

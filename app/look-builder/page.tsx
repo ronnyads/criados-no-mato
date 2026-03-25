@@ -18,7 +18,7 @@ export default function LookBuilderPage() {
   const { config } = useStoreConfig();
   
   // Pegamos apenas produtos que estão marcados como inLookBuilder e que sejam bonés
-  const CAPS = config.products.filter(p => p.category === 'bones' && p.inLookBuilder);
+  const CAPS = config.products.filter(p => p.category === 'bones' && p.inLookBuilder && p.active);
   
   const [selectedCap, setSelectedCap] = useState(CAPS[0] || null);
   const [added, setAdded] = useState(false);
