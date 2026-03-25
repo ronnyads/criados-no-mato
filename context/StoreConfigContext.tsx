@@ -192,6 +192,19 @@ export function StoreConfigProvider({ children }: { children: React.ReactNode })
     loadConfig();
   }, []);
 
+  // Listen for real-time config updates (specifically for the admin iframe live preview)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleMessage = (event: MessageEvent) => {
+      // Avoid circular updates by ensuring it only applies to iframes receiving it from the parent
+      if (event.data?.type === 'CNM_CONFIG_UPDATE' && window !== window.top) {
+        setConfig(event.data.config);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   // Save to Supabase whenever config changes with a Debounce
   useEffect(() => {
     if (!isLoaded) return; // Prevent overwriting DB with DEFAULT_CONFIG before load

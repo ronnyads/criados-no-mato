@@ -45,6 +45,7 @@ function reducer(state: CartState, action: Action): CartState {
   }
 }
 
+const CartCtx = createContext<{
   state: CartState;
   add: (p: Product) => void;
   remove: (id: string | number) => void;
