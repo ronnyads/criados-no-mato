@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStoreConfig } from '@/context/StoreConfigContext';
+import type { StoreConfig } from '@/context/StoreConfigContext';
 import { Save, RefreshCw, Monitor, Smartphone, Eye, Info } from 'lucide-react';
 
 const GOLD = '#C8922A';
@@ -265,13 +266,13 @@ export default function ThemeEditorPage() {
                   <div style={lbl}>{label}</div>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <input type="color"
-                      value={(config as Record<string, string>)[key]}
-                      onChange={e => updateConfig({ [key]: e.target.value } as never)}
+                      value={(config as unknown as Record<string, string>)[key]}
+                      onChange={e => updateConfig({ [key]: e.target.value } as Partial<StoreConfig>)}
                       style={{ width: 36, height: 34, padding: 2, border: '1px solid #E0E0E0', borderRadius: 4, cursor: 'pointer' }}
                     />
                     <input style={{ ...field(), flex: 1 }}
-                      value={(config as Record<string, string>)[key]}
-                      onChange={e => updateConfig({ [key]: e.target.value } as never)}
+                      value={(config as unknown as Record<string, string>)[key]}
+                      onChange={e => updateConfig({ [key]: e.target.value } as Partial<StoreConfig>)}
                     />
                   </div>
                 </div>
