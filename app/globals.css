@@ -71,7 +71,8 @@ body::after {
 }
 
 /* ─── Custom Cursor ──────────────────────────────────────── */
-* { cursor: none !important; }
+/* Custom cursor only applies outside /admin — PublicOnly handles rendering */
+body:not(.admin-layout) * { cursor: none !important; }
 
 .cursor-dot {
   position: fixed;

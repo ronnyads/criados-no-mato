@@ -14,6 +14,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     setAuthed(sessionStorage.getItem('cnm_admin_auth') === '1');
   }, [pathname]);
 
+  // Mark body as admin so cursor:none CSS doesn't apply
+  useEffect(() => {
+    document.body.classList.add('admin-layout');
+    return () => document.body.classList.remove('admin-layout');
+  }, []);
+
   const showSidebar = !isLoginPage && authed;
 
   return (
