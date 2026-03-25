@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import CustomCursor from "@/components/CustomCursor";
 import SmoothScroll from "@/components/SmoothScroll";
 import { CartProvider } from "@/context/CartContext";
+import { StoreConfigProvider } from "@/context/StoreConfigContext";
+import ConfigReceiver from "@/components/ConfigReceiver";
 import { Toaster } from "react-hot-toast";
 import PageLoader from "@/components/PageLoader";
 
@@ -35,24 +37,27 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <PageLoader />
-          <CustomCursor />
-          <SmoothScroll>
-            <Header />
-            <main>{children}</main>
-            <Toaster
-              position="bottom-center"
-              toastOptions={{
-                style: {
-                  background: "#1A1612",
-                  color: "#F5EDD8",
-                  border: "1px solid rgba(200,146,42,0.3)",
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "0.875rem",
-                },
-              }}
-            />
-          </SmoothScroll>
+          <StoreConfigProvider>
+            <ConfigReceiver />
+            <PageLoader />
+            <CustomCursor />
+            <SmoothScroll>
+              <Header />
+              <main>{children}</main>
+              <Toaster
+                position="bottom-center"
+                toastOptions={{
+                  style: {
+                    background: "#1A1612",
+                    color: "#F5EDD8",
+                    border: "1px solid rgba(200,146,42,0.3)",
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.875rem",
+                  },
+                }}
+              />
+            </SmoothScroll>
+          </StoreConfigProvider>
         </CartProvider>
       </body>
     </html>

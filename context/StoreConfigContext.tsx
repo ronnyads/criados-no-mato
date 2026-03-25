@@ -21,7 +21,7 @@ export interface ProductConfig {
   price: number;
   stock: number;
   category: 'bones' | 'adesivos';
-  image?: string; // base64 or URL
+  image?: string | null; // base64 or URL, null = removed
   featured: boolean;      // show on homepage grid
   inLookBuilder: boolean; // show in gamification
   active: boolean;        // visible in store at all
@@ -198,7 +198,11 @@ export function StoreConfigProvider({ children }: { children: React.ReactNode })
   const updateProduct = useCallback((id: number, partial: Partial<ProductConfig>) => {
     setConfig(prev => ({
       ...prev,
-      products: prev.products.map(p => p.id === id ? { ...p, ...partial } : p),
+      products: prev.products.map(p => {
+        if (p.id !== id) return p;
+        // Use Object.assign so null values (e.g. image: null) are preserved
+        return Object.assign({}, p, partial);
+      }),
     }));
   }, []);
 

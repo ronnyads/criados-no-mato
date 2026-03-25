@@ -214,7 +214,7 @@ export default function ProdutosPage() {
                       {editDraft.image && (
                         <>
                           <img src={editDraft.image} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #DDD' }} />
-                          <button onClick={() => setEditDraft(d => ({ ...d, image: undefined }))} title="Remover foto" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.5rem', cursor: 'pointer', fontSize: '0.7rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
+                          <button onClick={() => setEditDraft(d => ({ ...d, image: null }))} title="Remover foto" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.5rem', cursor: 'pointer', fontSize: '0.7rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
                         </>
                       )}
                     </div>
@@ -327,7 +327,7 @@ export default function ProdutosPage() {
                 {newProduct.image && (
                   <>
                     <img src={newProduct.image} alt="" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #DDD' }} />
-                    <button onClick={() => setNewProduct(p => ({ ...p, image: undefined }))} style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.6rem', cursor: 'pointer', fontSize: '0.72rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
+                    <button onClick={() => setNewProduct(p => ({ ...p, image: null }))} style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.6rem', cursor: 'pointer', fontSize: '0.72rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
                   </>
                 )}
               </div>
