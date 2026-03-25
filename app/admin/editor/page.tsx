@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useStoreConfig } from '@/context/StoreConfigContext';
 import type { StoreConfig } from '@/context/StoreConfigContext';
 import { Save, RefreshCw, Monitor, Smartphone, Eye, Info } from 'lucide-react';
+import { compressImage } from '@/utils/imageCompressor';
 
 const GOLD = '#C8922A';
 const TABS = ['Hero', 'Manifesto', 'Cores & Logo', 'Imagens', 'Footer', 'Senha'];
@@ -91,15 +92,18 @@ function ImageUpload({ label, hint, value, onChange, onRemove }: {
           </button>
         )}
       </div>
-      <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+      <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
         const file = e.target.files?.[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-          onChange(ev.target?.result as string);
+        try {
+          const compressed = await compressImage(file);
+          onChange(compressed);
+        } catch (err) {
+          console.error('Compression failed', err);
+          alert('Erro ao processar imagem.');
+        } finally {
           if (ref.current) ref.current.value = ''; // reset so same file can re-upload
-        };
-        reader.readAsDataURL(file);
+        }
       }} />
     </div>
   );

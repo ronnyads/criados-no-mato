@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useStoreConfig } from '@/context/StoreConfigContext';
 import type { ProductConfig } from '@/context/StoreConfigContext';
 import { Plus, Trash2, X, Edit2, Star, Eye, EyeOff, ImagePlus } from 'lucide-react';
+import { compressImage } from '@/utils/imageCompressor';
 
 const GOLD = '#C8922A';
 
@@ -97,16 +98,18 @@ export default function ProdutosPage() {
     }
   };
 
-  const handleImageUpload = (file: File, target: 'edit' | 'new', inputEl?: HTMLInputElement | null) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const base64 = e.target?.result as string;
-      if (target === 'edit') setEditDraft(d => ({ ...d, image: base64 }));
-      else setNewProduct(p => ({ ...p, image: base64 }));
+  const handleImageUpload = async (file: File, target: 'edit' | 'new', inputEl?: HTMLInputElement | null) => {
+    try {
+      const compressed = await compressImage(file);
+      if (target === 'edit') setEditDraft(d => ({ ...d, image: compressed }));
+      else setNewProduct(p => ({ ...p, image: compressed }));
+    } catch (err) {
+      console.error('Compression failed:', err);
+      alert('Erro ao processar imagem.');
+    } finally {
       // Reset so same file can be re-selected
       if (inputEl) inputEl.value = '';
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleAddProduct = () => {
