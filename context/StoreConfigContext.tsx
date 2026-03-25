@@ -51,7 +51,6 @@ export interface StoreConfig {
   // Global
   brandName: string;
   brandTagline: string;
-  logoImage?: string;
   adminPassword: string;
 
   // Hero
@@ -78,6 +77,13 @@ export interface StoreConfig {
   footerTagline: string;
   instagramUrl: string;
   contactUrl: string;
+
+  // Images
+  logoImage?: string | null;
+  heroImage?: string | null;
+  manifestoImage?: string | null;
+  collectionBannerImage?: string | null;
+  ogImage?: string | null;
 
   // Theme colors
   colorGold: string;

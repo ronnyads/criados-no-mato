@@ -42,8 +42,12 @@ function DimHint({ text }: { text: string }) {
   );
 }
 
-function ImageUpload({ label, hint, value, onChange }: {
-  label: string; hint: string; value?: string; onChange: (b64: string) => void;
+function ImageUpload({ label, hint, value, onChange, onRemove }: {
+  label: string;
+  hint: string;
+  value?: string | null;
+  onChange: (b64: string) => void;
+  onRemove?: () => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -71,11 +75,30 @@ function ImageUpload({ label, hint, value, onChange }: {
           </div>
         )}
       </div>
+      <div style={{ display: 'flex', gap: '0.5rem', marginTop: 6 }}>
+        <button
+          onClick={e => { e.stopPropagation(); ref.current?.click(); }}
+          style={{ flex: 1, padding: '0.35rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer', color: '#555' }}
+        >
+          {value ? '🔄 Trocar imagem' : '📁 Escolher arquivo'}
+        </button>
+        {value && onRemove && (
+          <button
+            onClick={e => { e.stopPropagation(); onRemove(); }}
+            style={{ padding: '0.35rem 0.75rem', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer', color: '#ef4444', fontWeight: 600 }}
+          >
+            ✕ Remover
+          </button>
+        )}
+      </div>
       <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = ev => onChange(ev.target?.result as string);
+        reader.onload = ev => {
+          onChange(ev.target?.result as string);
+          if (ref.current) ref.current.value = ''; // reset so same file can re-upload
+        };
         reader.readAsDataURL(file);
       }} />
     </div>
@@ -115,7 +138,7 @@ export default function ThemeEditorPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#F5F5F5' }}>
+    <div style={{ display: 'flex', height: '100%', overflow: 'hidden', background: '#F5F5F5' }}>
       {/* ─── Left Panel ────────────────────────────────────── */}
       <div style={{
         width: 340,
@@ -290,41 +313,46 @@ export default function ThemeEditorPage() {
           {tab === 'Imagens' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ background: '#FEF9EC', border: '1px solid #F0DFA0', borderRadius: 8, padding: '0.75rem 1rem', fontSize: '0.78rem', color: '#7A6200', marginBottom: '0.5rem' }}>
-                💡 As imagens são salvas localmente no navegador. Para produção, faça upload direto em cada produto na página <strong>Produtos</strong>.
+                💡 Imagens salvas localmente no navegador. Para produção migre para Supabase Storage.
               </div>
 
               <ImageUpload
                 label="Logo Principal"
-                hint="Ideal: 300×80px | PNG ou SVG transparent | Max 200KB"
+                hint="Ideal: 300×80px | PNG ou SVG transparente | Max 200KB"
                 value={config.logoImage}
                 onChange={v => updateConfig({ logoImage: v })}
+                onRemove={() => updateConfig({ logoImage: null })}
               />
               <ImageUpload
                 label="Imagem do Hero (Background)"
                 hint="Ideal: 1920×1080px (16:9) | JPG | Max 500KB"
-                value={undefined}
-                onChange={() => {}}
+                value={config.heroImage}
+                onChange={v => updateConfig({ heroImage: v })}
+                onRemove={() => updateConfig({ heroImage: null })}
               />
               <ImageUpload
                 label="Imagem do Manifesto"
-                hint="Ideal: 800×1000px (4:5, retrato) | JPG | Max 300KB"
-                value={undefined}
-                onChange={() => {}}
+                hint="Ideal: 800×1000px (4:5 retrato) | JPG | Max 300KB"
+                value={config.manifestoImage}
+                onChange={v => updateConfig({ manifestoImage: v })}
+                onRemove={() => updateConfig({ manifestoImage: null })}
               />
               <ImageUpload
-                label="Bannner da Coleção (topo)"
+                label="Banner da Coleção (topo)"
                 hint="Ideal: 1440×400px (wide) | JPG | Max 300KB"
-                value={undefined}
-                onChange={() => {}}
+                value={config.collectionBannerImage}
+                onChange={v => updateConfig({ collectionBannerImage: v })}
+                onRemove={() => updateConfig({ collectionBannerImage: null })}
               />
               <ImageUpload
-                label="OG Image (prévia nas redes sociais)"
+                label="OG Image (prévia nas redes)"
                 hint="Ideal: 1200×630px | JPG | Max 200KB"
-                value={undefined}
-                onChange={() => {}}
+                value={config.ogImage}
+                onChange={v => updateConfig({ ogImage: v })}
+                onRemove={() => updateConfig({ ogImage: null })}
               />
               <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 8, padding: '0.75rem 1rem', fontSize: '0.78rem', color: '#166534' }}>
-                🧢 <strong>Fotos de produtos:</strong> acesse <em>Produtos → Editar →</em> clique em "Adicionar foto" em cada produto.
+                🧢 <strong>Fotos de produtos:</strong> acesse <em>Produtos → Editar → clique em &quot;Adicionar foto&quot;</em> em cada produto.
               </div>
             </div>
           )}
