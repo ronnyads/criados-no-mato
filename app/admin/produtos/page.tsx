@@ -97,12 +97,14 @@ export default function ProdutosPage() {
     }
   };
 
-  const handleImageUpload = (file: File, target: 'edit' | 'new') => {
+  const handleImageUpload = (file: File, target: 'edit' | 'new', inputEl?: HTMLInputElement | null) => {
     const reader = new FileReader();
     reader.onload = e => {
       const base64 = e.target?.result as string;
       if (target === 'edit') setEditDraft(d => ({ ...d, image: base64 }));
       else setNewProduct(p => ({ ...p, image: base64 }));
+      // Reset so same file can be re-selected
+      if (inputEl) inputEl.value = '';
     };
     reader.readAsDataURL(file);
   };
@@ -207,9 +209,13 @@ export default function ProdutosPage() {
                       <button onClick={() => fileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.75rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer' }}>
                         <ImagePlus size={14} /> {editDraft.image ? 'Trocar foto' : 'Adicionar foto'}
                       </button>
-                      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'edit')} />
+                      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }}
+                        onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, 'edit', fileInputRef.current); }} />
                       {editDraft.image && (
-                        <img src={editDraft.image} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #DDD' }} />
+                        <>
+                          <img src={editDraft.image} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #DDD' }} />
+                          <button onClick={() => setEditDraft(d => ({ ...d, image: undefined }))} title="Remover foto" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.5rem', cursor: 'pointer', fontSize: '0.7rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
+                        </>
                       )}
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -312,13 +318,19 @@ export default function ProdutosPage() {
               <Toggle value={newProduct.inLookBuilder} onChange={v => setNewProduct(p => ({ ...p, inLookBuilder: v }))} label="Look Builder" />
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <button onClick={() => newFileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.82rem', cursor: 'pointer' }}>
-                <ImagePlus size={14} /> {newProduct.image ? 'Trocar foto' : 'Adicionar foto'}
-              </button>
-              <input ref={newFileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'new')} />
-              {newProduct.image && (
-                <img src={newProduct.image} alt="" style={{ marginTop: '0.5rem', width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid #DDD' }} />
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <button onClick={() => newFileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.82rem', cursor: 'pointer' }}>
+                  <ImagePlus size={14} /> {newProduct.image ? 'Trocar foto' : 'Adicionar foto'}
+                </button>
+                <input ref={newFileInputRef} type="file" accept="image/*" style={{ display: 'none' }}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, 'new', newFileInputRef.current); }} />
+                {newProduct.image && (
+                  <>
+                    <img src={newProduct.image} alt="" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #DDD' }} />
+                    <button onClick={() => setNewProduct(p => ({ ...p, image: undefined }))} style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, padding: '0.3rem 0.6rem', cursor: 'pointer', fontSize: '0.72rem', color: '#ef4444', fontWeight: 600 }}>✕ Remover</button>
+                  </>
+                )}
+              </div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button onClick={handleAddProduct} disabled={!newProduct.name || !newProduct.price} style={{ flex: 1, padding: '0.75rem', background: newProduct.name && newProduct.price ? GOLD : '#DDD', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, cursor: newProduct.name && newProduct.price ? 'pointer' : 'default' }}>
