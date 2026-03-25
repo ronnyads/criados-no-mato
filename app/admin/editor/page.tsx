@@ -150,7 +150,7 @@ export default function ThemeEditorPage() {
     iframe.addEventListener('load', send);
     send();
     return () => iframe.removeEventListener('load', send);
-  }, [config]);
+  }, [config, previewMode]);
 
   const handleSave = () => {
     setSaved(true);
