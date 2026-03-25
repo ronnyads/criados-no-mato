@@ -2,12 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useStoreConfig } from '@/context/StoreConfigContext';
 import { products } from '@/lib/products';
 import { ShoppingBag, SlidersHorizontal } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function ColecaoPage() {
   const { add } = useCart();
+  const { config } = useStoreConfig();
   const [cat, setCat] = useState<'todos' | 'bones' | 'adesivos'>('todos');
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -29,13 +31,48 @@ export default function ColecaoPage() {
 
   return (
     <div style={{ minHeight: '100dvh', background: '#0D0B08', paddingTop: 'var(--header-h)' }}>
-      {/* Header */}
+      {/* Header Premium com Imagem */}
       <div style={{
-        padding: '4rem clamp(1.5rem,5vw,5rem) 2rem',
+        position: 'relative',
+        height: config.collectionBannerImage ? 'clamp(300px, 40vh, 500px)' : 'auto',
+        padding: config.collectionBannerImage ? '0' : '4rem clamp(1.5rem,5vw,5rem) 2rem',
         borderBottom: '1px solid rgba(200,146,42,0.1)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        overflow: 'hidden',
       }}>
-        <div className="text-label" style={{ marginBottom: '0.75rem' }}>Criados no Mato</div>
-        <h1 className="text-section">A Coleção</h1>
+        {config.collectionBannerImage && (
+          <>
+            <img 
+              src={config.collectionBannerImage} 
+              alt="Coleção Criados no Mato" 
+              style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center',
+                opacity: 0.6,
+              }}
+            />
+            {/* Gradiente escuro para legibilidade */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to top, #0D0B08, transparent 80%)'
+            }} />
+          </>
+        )}
+        
+        <div style={{
+          position: 'relative', zIndex: 2,
+          padding: config.collectionBannerImage ? 'clamp(1.5rem, 5vw, 5rem)' : 0,
+          marginTop: config.collectionBannerImage ? 'auto' : 0,
+        }}>
+          <div className="text-label" style={{ marginBottom: '0.75rem', color: config.collectionBannerImage ? 'var(--color-gold)' : 'inherit' }}>
+            Criados no Mato
+          </div>
+          <h1 className="text-section" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
+            A Coleção
+          </h1>
+        </div>
       </div>
 
       {/* Filters */}
