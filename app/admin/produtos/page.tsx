@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useStoreConfig } from '@/context/StoreConfigContext';
 import type { ProductConfig } from '@/context/StoreConfigContext';
 import { Plus, Trash2, X, Edit2, Star, Eye, EyeOff, ImagePlus } from 'lucide-react';
-import { compressImage } from '@/utils/imageCompressor';
+import { compressImageToBlob } from '@/utils/imageCompressor';
+import { uploadImage, deleteImage } from '@/utils/supabaseStorage';
 
 const GOLD = '#C8922A';
 
@@ -76,6 +77,7 @@ export default function ProdutosPage() {
   const [filter, setFilter] = useState<'all' | 'bones' | 'adesivos'>('all');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const newFileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && sessionStorage.getItem('cnm_admin_auth') !== '1') {
@@ -100,13 +102,22 @@ export default function ProdutosPage() {
 
   const handleImageUpload = async (file: File, target: 'edit' | 'new', inputEl?: HTMLInputElement | null) => {
     try {
-      const compressed = await compressImage(file);
-      if (target === 'edit') setEditDraft(d => ({ ...d, image: compressed }));
-      else setNewProduct(p => ({ ...p, image: compressed }));
+      setUploading(true);
+      const blob = await compressImageToBlob(file);
+      const url = await uploadImage(blob, file.name.split('.')[0] || 'product');
+      
+      if (target === 'edit') {
+        if (editDraft.image) deleteImage(editDraft.image).catch(console.warn);
+        setEditDraft(d => ({ ...d, image: url }));
+      } else {
+        if (newProduct.image) deleteImage(newProduct.image).catch(console.warn);
+        setNewProduct(p => ({ ...p, image: url }));
+      }
     } catch (err) {
-      console.error('Compression failed:', err);
-      alert('Erro ao processar imagem.');
+      console.error('Upload failed:', err);
+      alert('Erro ao enviar imagem para a nuvem.');
     } finally {
+      setUploading(false);
       // Reset so same file can be re-selected
       if (inputEl) inputEl.value = '';
     }
@@ -209,8 +220,8 @@ export default function ProdutosPage() {
                       <Toggle value={!!editDraft.active} onChange={v => setEditDraft(d => ({ ...d, active: v }))} label="Ativo" />
 
                       {/* Image upload */}
-                      <button onClick={() => fileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.75rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer' }}>
-                        <ImagePlus size={14} /> {editDraft.image ? 'Trocar foto' : 'Adicionar foto'}
+                      <button disabled={uploading} onClick={() => fileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.75rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.78rem', cursor: uploading ? 'wait' : 'pointer' }}>
+                        <ImagePlus size={14} /> {uploading ? 'Enviando...' : (editDraft.image ? 'Trocar foto' : 'Adicionar foto')}
                       </button>
                       <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }}
                         onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, 'edit', fileInputRef.current); }} />
@@ -322,8 +333,8 @@ export default function ProdutosPage() {
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <button onClick={() => newFileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.82rem', cursor: 'pointer' }}>
-                  <ImagePlus size={14} /> {newProduct.image ? 'Trocar foto' : 'Adicionar foto'}
+                <button disabled={uploading} onClick={() => newFileInputRef.current?.click()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.82rem', cursor: uploading ? 'wait' : 'pointer' }}>
+                  <ImagePlus size={14} /> {uploading ? 'Enviando...' : (newProduct.image ? 'Trocar foto' : 'Adicionar foto')}
                 </button>
                 <input ref={newFileInputRef} type="file" accept="image/*" style={{ display: 'none' }}
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, 'new', newFileInputRef.current); }} />

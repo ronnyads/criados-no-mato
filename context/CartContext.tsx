@@ -2,10 +2,10 @@
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 
 export interface Product {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
-  image: string;
+  image?: string | null;
   color?: string;
   sku?: string;
   slug: string;
@@ -18,8 +18,8 @@ interface CartState { items: CartItem[]; isOpen: boolean; }
 
 type Action =
   | { type: 'ADD'; product: Product }
-  | { type: 'REMOVE'; id: string }
-  | { type: 'UPDATE_QTY'; id: string; qty: number }
+  | { type: 'REMOVE'; id: string | number }
+  | { type: 'UPDATE_QTY'; id: string | number; qty: number }
   | { type: 'TOGGLE' }
   | { type: 'CLEAR' };
 
@@ -45,11 +45,10 @@ function reducer(state: CartState, action: Action): CartState {
   }
 }
 
-const CartCtx = createContext<{
   state: CartState;
   add: (p: Product) => void;
-  remove: (id: string) => void;
-  updateQty: (id: string, qty: number) => void;
+  remove: (id: string | number) => void;
+  updateQty: (id: string | number, qty: number) => void;
   toggle: () => void;
   total: number;
   count: number;

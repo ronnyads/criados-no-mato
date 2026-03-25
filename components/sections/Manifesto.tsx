@@ -86,9 +86,8 @@ export default function Manifesto() {
                 maxWidth: 800,
                 fontStyle: 'italic',
               }}>
-                "Nascemos no campo, crescemos no estilo. Cada boné carrega o cheiro de terra molhada,
-                a força do sol no couro e a liberdade de quem escolheu viver do jeito
-                que <em style={{ color: 'var(--color-gold)', fontStyle: 'normal' }}>nasceu pra ser</em>."
+                "{config.manifestoQuote}{' '}
+                <em style={{ color: 'var(--color-gold)', fontStyle: 'normal' }}>{config.manifestoHighlight}</em>."
               </p>
 
               <div style={{
@@ -99,12 +98,8 @@ export default function Manifesto() {
               }} />
 
               <div style={{ display: 'flex', gap: 'clamp(2rem, 5vw, 4rem)', flexWrap: 'wrap' }}>
-                {[
-                  { num: '018+', label: 'Modelos únicos' },
-                  { num: '10K+', label: 'Da roça pra vida' },
-                  { num: '100%', label: 'Autenticidade' },
-                ].map(stat => (
-                  <div key={stat.num}>
+                {config.manifestoStats.map((stat, idx) => (
+                  <div key={idx}>
                     <div style={{
                       fontFamily: 'var(--font-display)',
                       fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -112,7 +107,7 @@ export default function Manifesto() {
                       color: 'var(--color-gold)',
                       lineHeight: 1,
                     }}>
-                      {stat.num}
+                      {stat.value}
                     </div>
                     <div className="text-label" style={{ color: 'var(--color-muted)', marginTop: '0.5rem', fontSize: '0.65rem' }}>
                       {stat.label}

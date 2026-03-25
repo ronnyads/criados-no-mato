@@ -1,8 +1,6 @@
-'use client';
-import { useParams } from 'next/navigation';
-import { notFound } from 'next/navigation';
-import { getBySlug, getFeatured } from '@/lib/products';
+import { useParams, notFound } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useStoreConfig } from '@/context/StoreConfigContext';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, ArrowLeft, Check, Star } from 'lucide-react';
@@ -11,10 +9,12 @@ import toast from 'react-hot-toast';
 export default function ProdutoPage() {
   const params = useParams();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
-  const product = getBySlug(slug);
+  const { config } = useStoreConfig();
   const { add } = useCart();
   const [added, setAdded] = useState(false);
-  const related = getFeatured().filter(p => p.id !== product?.id).slice(0, 3);
+  
+  const product = config.products.find(p => p.slug === slug);
+  const related = config.products.filter(p => p.featured && p.id !== product?.id).slice(0, 3);
 
   if (!product) return notFound();
 
@@ -63,8 +63,21 @@ export default function ProdutoPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             position: 'relative', overflow: 'hidden',
             borderRadius: 4,
+            padding: '3rem',
           }}>
-            <span style={{ fontSize: '8rem' }}>🧢</span>
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                style={{
+                  width: '100%', height: '100%', objectFit: 'contain',
+                  filter: 'drop-shadow(0 30px 40px rgba(0,0,0,0.6))',
+                  mixBlendMode: 'normal'
+                }} 
+              />
+            ) : (
+              <span style={{ fontSize: '8rem' }}>🧢</span>
+            )}
 
             {/* Decorative */}
             <div style={{
@@ -169,8 +182,14 @@ export default function ProdutoPage() {
         <div className="text-label" style={{ marginBottom: '0.75rem' }}>Você também pode gostar</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1px', background: 'rgba(200,146,42,0.08)' }}>
           {related.map(p => (
-            <Link key={p.id} href={`/produto/${p.slug}`} className="product-card">
-              <div style={{ background: '#110F0B', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🧢</div>
+              <Link key={p.id} href={`/produto/${p.slug}`} className="product-card">
+              {p.image ? (
+                <div style={{ background: '#110F0B', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+                  <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+              ) : (
+                <div style={{ background: '#110F0B', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🧢</div>
+              )}
               <div style={{ padding: '1rem', background: '#110F0B' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', marginBottom: '0.25rem' }}>{p.name}</div>
                 <div style={{ fontFamily: 'var(--font-accent)', fontSize: '0.9rem', color: 'var(--color-gold)', fontWeight: 600 }}>

@@ -1,11 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
-import { products } from '@/lib/products';
+import { useStoreConfig } from '@/context/StoreConfigContext';
 import { ShoppingBag, Share2, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const CAPS = products.filter(p => p.category === 'bones');
 
 type Slot = { label: string; icon: string; active: boolean };
 
@@ -17,10 +15,23 @@ const SLOTS: Slot[] = [
 
 export default function LookBuilderPage() {
   const { add } = useCart();
-  const [selectedCap, setSelectedCap] = useState(CAPS[0]);
+  const { config } = useStoreConfig();
+  
+  // Pegamos apenas produtos que estão marcados como inLookBuilder e que sejam bonés
+  const CAPS = config.products.filter(p => p.category === 'bones' && p.inLookBuilder);
+  
+  const [selectedCap, setSelectedCap] = useState(CAPS[0] || null);
   const [added, setAdded] = useState(false);
 
+  // Fallback se o CAPS.length mudar
+  useEffect(() => {
+    if (CAPS.length > 0 && !selectedCap) {
+      setSelectedCap(CAPS[0]);
+    }
+  }, [CAPS, selectedCap]);
+
   const handleAdd = () => {
+    if (!selectedCap) return;
     add(selectedCap);
     setAdded(true);
     toast.success(`${selectedCap.name} adicionado ao carrinho!`);
@@ -28,6 +39,7 @@ export default function LookBuilderPage() {
   };
 
   const handleShare = async () => {
+    if (!selectedCap) return;
     const text = `🧢 Montei meu look no Criados no Mato!\n\nBoné: ${selectedCap.name}\nR$ ${selectedCap.price.toFixed(2).replace('.', ',')}\n\nCrie o seu: criadosnomato.com.br`;
     if (navigator.share) {
       await navigator.share({ text, url: 'https://criadosnomato.com.br' });
@@ -36,6 +48,14 @@ export default function LookBuilderPage() {
       toast.success('Link copiado! Cole no WhatsApp ou Instagram 📲');
     }
   };
+
+  if (!selectedCap) {
+    return (
+      <div style={{ minHeight: '100dvh', background: '#0D0B08', paddingTop: 'var(--header-h)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted)' }}>
+        Nenhum produto configurado para o Look Builder.
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100dvh', background: '#0D0B08', paddingTop: 'var(--header-h)' }}>
@@ -217,18 +237,23 @@ export default function LookBuilderPage() {
                 }}
               >
                 {/* Color swatch */}
-                <div style={{
-                  width: '100%',
-                  height: 80,
-                  borderRadius: 4,
-                  background: CAP_COLORS[cap.color ?? ''] ?? '#2A1F14',
-                  marginBottom: '0.75rem',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '2rem',
-                  transition: 'all 0.3s',
-                }}>
-                  🧢
-                </div>
+                  <div style={{
+                    width: '100%',
+                    height: 80,
+                    borderRadius: 4,
+                    background: cap.image ? '#0F0D0A' : (CAP_COLORS[cap.color ?? ''] ?? '#2A1F14'),
+                    marginBottom: '0.75rem',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '2rem',
+                    transition: 'all 0.3s',
+                    overflow: 'hidden',
+                  }}>
+                    {cap.image ? (
+                      <img src={cap.image} alt={cap.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    ) : (
+                      <span>🧢</span>
+                    )}
+                  </div>
 
                 {/* Info */}
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'var(--color-sand)', marginBottom: '0.2rem' }}>

@@ -1,15 +1,18 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { getFeatured } from '@/lib/products';
 import { useCart } from '@/context/CartContext';
+import { useStoreConfig } from '@/context/StoreConfigContext';
 import { ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function FeaturedProducts() {
   const { add } = useCart();
+  const { config } = useStoreConfig();
   const sectionRef = useRef<HTMLElement>(null);
-  const products = getFeatured();
+  
+  // Pegamos apenas produtos que estão ativos e marcados como destaque 
+  const products = config.products.filter(p => p.featured);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -57,24 +60,47 @@ export default function FeaturedProducts() {
             >
               {/* Image placeholder (styled bg until real images) */}
               <div style={{ position: 'relative' }}>
-                <div
-                  className="product-card-img"
-                  style={{
-                    background: `hsl(${30 + i * 15}, ${20 + i * 5}%, ${8 + i * 2}%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <span style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '3rem',
-                    fontWeight: 600,
-                    color: 'rgba(200,146,42,0.25)',
-                  }}>
-                    🧢
-                  </span>
-                </div>
+                {product.image ? (
+                  <div
+                    className="product-card-img"
+                    style={{
+                      position: 'relative',
+                      background: 'radial-gradient(circle at center, rgba(245,237,216,0.05) 0%, transparent 70%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      padding: '2rem 1rem',
+                    }}
+                  >
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'contain',
+                        mixBlendMode: 'normal',
+                        filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.5))',
+                      }} 
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className="product-card-img"
+                    style={{
+                      background: `hsl(${30 + i * 15}, ${20 + i * 5}%, ${8 + i * 2}%)`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '3rem',
+                      fontWeight: 600,
+                      color: 'rgba(200,146,42,0.25)',
+                    }}>
+                      🧢
+                    </span>
+                  </div>
+                )}
 
                 {/* Limited badge */}
                 {product.stock <= 10 && (

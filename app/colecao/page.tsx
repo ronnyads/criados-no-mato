@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useStoreConfig } from '@/context/StoreConfigContext';
-import { products } from '@/lib/products';
 import { ShoppingBag, SlidersHorizontal } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -13,7 +12,7 @@ export default function ColecaoPage() {
   const [cat, setCat] = useState<'todos' | 'bones' | 'adesivos'>('todos');
   const sectionRef = useRef<HTMLElement>(null);
 
-  const filtered = cat === 'todos' ? products : products.filter(p => p.category === cat);
+  const filtered = cat === 'todos' ? config.products : config.products.filter(p => p.category === cat);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -125,17 +124,40 @@ export default function ColecaoPage() {
               style={{ transitionDelay: `${i * 0.06}s` }}
             >
               <div style={{ position: 'relative' }}>
-                <div
-                  className="product-card-img"
-                  style={{
-                    background: `hsl(${28 + i * 12}, ${18 + i * 4}%, ${9 + i}%)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}
-                >
-                  <span style={{ fontSize: '3.5rem' }}>
-                    {product.category === 'bones' ? '🧢' : '🏷️'}
-                  </span>
-                </div>
+                {product.image ? (
+                  <div
+                    className="product-card-img"
+                    style={{
+                      position: 'relative',
+                      background: 'radial-gradient(circle at center, rgba(245,237,216,0.05) 0%, transparent 70%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      padding: '2rem 1rem',
+                    }}
+                  >
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'contain',
+                        mixBlendMode: 'normal',
+                        filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.5))',
+                      }} 
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className="product-card-img"
+                    style={{
+                      background: `hsl(${28 + i * 12}, ${18 + i * 4}%, ${9 + i}%)`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ fontSize: '3.5rem' }}>
+                      {product.category === 'bones' ? '🧢' : '🏷️'}
+                    </span>
+                  </div>
+                )}
 
                 {product.stock <= 10 && (
                   <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>

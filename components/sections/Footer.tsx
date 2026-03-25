@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { useStoreConfig } from '@/context/StoreConfigContext';
 
 function InstagramIcon({ size = 24 }: { size?: number }) {
   return (
@@ -13,6 +14,8 @@ function InstagramIcon({ size = 24 }: { size?: number }) {
 }
 
 export default function Footer() {
+  const { config } = useStoreConfig();
+
   return (
     <footer style={{
       borderTop: '1px solid rgba(200,146,42,0.1)',
@@ -45,7 +48,7 @@ export default function Footer() {
               </div>
             </div>
             <p style={{ color: 'var(--color-muted)', fontSize: '0.85rem', lineHeight: 1.8, maxWidth: 240 }}>
-              Nascidos no campo. Criados com estilo. Bonés e acessórios para quem vive com autenticidade.
+              {config.footerTagline}
             </p>
           </div>
 
@@ -79,7 +82,7 @@ export default function Footer() {
             <div className="text-label" style={{ marginBottom: '1.5rem' }}>Contato</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <a
-                href="https://www.instagram.com/criadosnomato"
+                href={config.instagramUrl}
                 target="_blank"
                 rel="noopener"
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-muted)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}
@@ -91,7 +94,7 @@ export default function Footer() {
                 <ArrowUpRight size={12} />
               </a>
               <a
-                href="https://criadosnomato.com.br/contato/"
+                href={config.contactUrl}
                 target="_blank"
                 rel="noopener"
                 style={{ color: 'var(--color-muted)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}

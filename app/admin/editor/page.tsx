@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useStoreConfig } from '@/context/StoreConfigContext';
 import type { StoreConfig } from '@/context/StoreConfigContext';
 import { Save, RefreshCw, Monitor, Smartphone, Eye, Info } from 'lucide-react';
-import { compressImage } from '@/utils/imageCompressor';
+import { compressImageToBlob } from '@/utils/imageCompressor';
+import { uploadImage, deleteImage } from '@/utils/supabaseStorage';
 
 const GOLD = '#C8922A';
 const TABS = ['Hero', 'Manifesto', 'Cores & Logo', 'Imagens', 'Footer', 'Senha'];
@@ -47,27 +48,32 @@ function ImageUpload({ label, hint, value, onChange, onRemove }: {
   label: string;
   hint: string;
   value?: string | null;
-  onChange: (b64: string) => void;
+  onChange: (url: string) => void;
   onRemove?: () => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  
   return (
     <div style={{ marginBottom: '1rem' }}>
       <div style={{ ...lbl, marginBottom: 2 }}>{label}</div>
       <DimHint text={hint} />
       <div
-        onClick={() => ref.current?.click()}
+        onClick={() => !uploading && ref.current?.click()}
         style={{
           border: `2px dashed ${value ? GOLD : '#DDD'}`,
           borderRadius: 8,
           padding: '1rem',
           textAlign: 'center',
-          cursor: 'pointer',
+          cursor: uploading ? 'wait' : 'pointer',
           background: value ? '#FEF9EC' : '#FAFAFA',
           transition: 'all 0.2s',
+          opacity: uploading ? 0.7 : 1,
         }}
       >
-        {value ? (
+        {uploading ? (
+          <div style={{ color: GOLD, fontSize: '0.8rem', fontWeight: 600 }}>Enviando imagem...</div>
+        ) : value ? (
           <img src={value} alt="" style={{ maxWidth: '100%', maxHeight: 120, objectFit: 'contain', borderRadius: 4 }} />
         ) : (
           <div style={{ color: '#AAA', fontSize: '0.8rem' }}>
@@ -78,15 +84,21 @@ function ImageUpload({ label, hint, value, onChange, onRemove }: {
       </div>
       <div style={{ display: 'flex', gap: '0.5rem', marginTop: 6 }}>
         <button
+          disabled={uploading}
           onClick={e => { e.stopPropagation(); ref.current?.click(); }}
-          style={{ flex: 1, padding: '0.35rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer', color: '#555' }}
+          style={{ flex: 1, padding: '0.35rem', background: '#F5F5F5', border: '1px solid #DDD', borderRadius: 6, fontSize: '0.72rem', cursor: uploading ? 'wait' : 'pointer', color: '#555' }}
         >
-          {value ? '🔄 Trocar imagem' : '📁 Escolher arquivo'}
+          {uploading ? 'Enviando...' : (value ? '🔄 Trocar imagem' : '📁 Escolher arquivo')}
         </button>
         {value && onRemove && (
           <button
-            onClick={e => { e.stopPropagation(); onRemove(); }}
-            style={{ padding: '0.35rem 0.75rem', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer', color: '#ef4444', fontWeight: 600 }}
+            disabled={uploading}
+            onClick={e => { 
+                e.stopPropagation(); 
+                deleteImage(value).catch(console.warn);
+                onRemove(); 
+            }}
+            style={{ padding: '0.35rem 0.75rem', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, fontSize: '0.72rem', cursor: uploading ? 'wait' : 'pointer', color: '#ef4444', fontWeight: 600 }}
           >
             ✕ Remover
           </button>
@@ -96,12 +108,16 @@ function ImageUpload({ label, hint, value, onChange, onRemove }: {
         const file = e.target.files?.[0];
         if (!file) return;
         try {
-          const compressed = await compressImage(file);
-          onChange(compressed);
+          setUploading(true);
+          const blob = await compressImageToBlob(file);
+          const url = await uploadImage(blob, file.name.split('.')[0] || 'theme');
+          if (value) deleteImage(value).catch(console.warn);
+          onChange(url);
         } catch (err) {
-          console.error('Compression failed', err);
-          alert('Erro ao processar imagem.');
+          console.error('Upload failed', err);
+          alert('Erro ao enviar imagem para a nuvem.');
         } finally {
+          setUploading(false);
           if (ref.current) ref.current.value = ''; // reset so same file can re-upload
         }
       }} />
