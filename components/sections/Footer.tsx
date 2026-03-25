@@ -21,7 +21,7 @@ export default function Footer() {
     }}>
       <div className="container-max">
         {/* Top */}
-        <div style={{
+        <div className="footer-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr 1fr',
           gap: '3rem',
@@ -29,6 +29,11 @@ export default function Footer() {
           borderBottom: '1px solid rgba(200,146,42,0.08)',
           paddingBottom: '4rem',
         }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+          }
+        `}</style>
           {/* Brand */}
           <div>
             <div style={{ marginBottom: '1.5rem' }}>

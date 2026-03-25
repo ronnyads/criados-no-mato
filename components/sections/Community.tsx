@@ -45,7 +45,7 @@ export default function Community() {
         </div>
 
         {/* IG Grid */}
-        <div className="reveal" style={{
+        <div className="reveal ig-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '2px',

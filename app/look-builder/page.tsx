@@ -53,15 +53,20 @@ export default function LookBuilderPage() {
       </div>
 
       {/* Main builder */}
-      <div style={{
+      <div className="lb-layout" style={{
         display: 'grid',
         gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
         maxWidth: 1100,
         margin: '0 auto',
         gap: 0,
-        padding: '3rem clamp(1.5rem,5vw,5rem)',
+        padding: '3rem clamp(1rem,5vw,5rem)',
         alignItems: 'start',
       }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .lb-layout { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
         {/* Left — Avatar */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
           <div style={{

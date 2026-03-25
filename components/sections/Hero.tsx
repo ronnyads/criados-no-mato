@@ -49,7 +49,7 @@ export default function Hero() {
       }} />
 
       {/* Large decorative number */}
-      <div style={{
+      <div className="hide-mobile" style={{
         position: 'absolute',
         right: '-0.05em',
         top: '50%',
@@ -67,7 +67,7 @@ export default function Hero() {
       </div>
 
       {/* Vertical label right */}
-      <div style={{
+      <div className="hide-mobile" style={{
         position: 'absolute',
         right: 'clamp(1.5rem, 4vw, 3rem)',
         top: '50%',

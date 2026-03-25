@@ -5,6 +5,7 @@ import CustomCursor from "@/components/CustomCursor";
 import SmoothScroll from "@/components/SmoothScroll";
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
+import PageLoader from "@/components/PageLoader";
 
 export const metadata: Metadata = {
   title: "Criados no Mato — Bonés Premium",
@@ -34,6 +35,7 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
+          <PageLoader />
           <CustomCursor />
           <SmoothScroll>
             <Header />

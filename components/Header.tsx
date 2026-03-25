@@ -16,9 +16,70 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false); };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
     <>
       <CartDrawer />
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1050,
+            background: '#0D0B08',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            gap: '3rem',
+          }}
+        >
+          <button
+            onClick={() => setMenuOpen(false)}
+            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: 'var(--color-sand)' }}
+          >
+            <X size={24} strokeWidth={1.5} />
+          </button>
+
+          {[
+            { href: '/colecao', label: 'Coleção' },
+            { href: '/look-builder', label: 'Monte seu Look 🎮' },
+          ].map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '2.5rem',
+                fontWeight: 500,
+                color: 'var(--color-sand)',
+                textDecoration: 'none',
+                transition: 'color 0.3s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-gold)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-sand)')}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <div style={{ width: 60, height: 1, background: 'rgba(200,146,42,0.3)' }} />
+          <a
+            href="https://www.instagram.com/criadosnomato"
+            target="_blank"
+            rel="noopener"
+            style={{ fontFamily: 'var(--font-accent)', fontSize: '0.7rem', letterSpacing: '0.2em', color: 'var(--color-muted)', textDecoration: 'none' }}
+          >
+            @CRIADOSNOMATO
+          </a>
+        </div>
+      )}
+
       <header
         style={{
           position: 'fixed',
@@ -27,26 +88,40 @@ export default function Header() {
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
-          padding: '0 clamp(1.5rem, 5vw, 4rem)',
+          padding: '0 clamp(1rem, 4vw, 4rem)',
           transition: 'background 0.5s, border-color 0.5s',
           background: scrolled ? 'rgba(13,11,8,0.92)' : 'transparent',
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
           borderBottom: scrolled ? '1px solid rgba(200,146,42,0.15)' : '1px solid transparent',
         }}
       >
-        {/* Left nav */}
-        <nav style={{ display: 'flex', gap: '2rem', flex: 1 }}>
-          <Link href="/colecao" className="text-label" style={{ color: 'rgba(245,237,216,0.6)', letterSpacing: '0.15em', fontSize: '0.7rem', textDecoration: 'none', transition: 'color 0.3s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-gold)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,237,216,0.6)')}
-          >Coleção</Link>
-          <Link href="/look-builder" className="text-label" style={{ color: 'rgba(245,237,216,0.6)', letterSpacing: '0.15em', fontSize: '0.7rem', textDecoration: 'none', transition: 'color 0.3s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-gold)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,237,216,0.6)')}
-          >Monte seu Look</Link>
-        </nav>
+        {/* Left — desktop nav / mobile hamburger */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          {/* Desktop nav */}
+          <nav style={{ display: 'none' }} className="desktop-nav">
+            <Link href="/colecao" style={{ color: 'rgba(245,237,216,0.6)', letterSpacing: '0.15em', fontSize: '0.7rem', textDecoration: 'none', fontFamily: 'var(--font-accent)', fontWeight: 700, textTransform: 'uppercase', transition: 'color 0.3s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-gold)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,237,216,0.6)')}
+            >Coleção</Link>
+          </nav>
+          <nav style={{ display: 'none' }} className="desktop-nav">
+            <Link href="/look-builder" style={{ color: 'rgba(245,237,216,0.6)', letterSpacing: '0.15em', fontSize: '0.7rem', textDecoration: 'none', fontFamily: 'var(--font-accent)', fontWeight: 700, textTransform: 'uppercase', transition: 'color 0.3s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-gold)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,237,216,0.6)')}
+            >Monte seu Look</Link>
+          </nav>
 
-        {/* Logo */}
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="mobile-menu-btn"
+            style={{ background: 'none', border: 'none', color: 'var(--color-sand)', padding: 4, display: 'none' }}
+          >
+            <Menu size={22} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        {/* Center — Logo */}
         <Link href="/" style={{ textDecoration: 'none', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-sand)', letterSpacing: '0.08em', lineHeight: 1 }}>
@@ -58,7 +133,7 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Right */}
+        {/* Right — cart */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1, justifyContent: 'flex-end' }}>
           <button onClick={toggle} style={{ background: 'none', border: 'none', color: 'var(--color-sand)', position: 'relative', padding: '4px' }}>
             <ShoppingBag size={20} strokeWidth={1.5} />
@@ -78,6 +153,17 @@ export default function Header() {
           </button>
         </div>
       </header>
+
+      <style>{`
+        @media (min-width: 769px) {
+          .desktop-nav { display: flex !important; }
+          .mobile-menu-btn { display: none !important; }
+        }
+        @media (max-width: 768px) {
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: flex !important; }
+        }
+      `}</style>
     </>
   );
 }

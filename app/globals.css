@@ -262,3 +262,23 @@ body::after {
 
 /* ─── Selection ──────────────────────────────────────────── */
 ::selection { background: var(--color-gold); color: var(--color-earth); }
+
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hide decorative elements that don't work on mobile */
+  .hide-mobile { display: none !important; }
+
+  /* Safe side padding */
+  .section { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+  .section-sm { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+
+  /* Instagram community grid: 2 cols on mobile */
+  .ig-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Related products: 1 col on mobile */
+  .related-grid { grid-template-columns: 1fr !important; }
+
+  /* Product info padding on mobile */
+  .prod-info { padding: 1.5rem 0 !important; }
+}
+

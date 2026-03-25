@@ -42,14 +42,19 @@ export default function ProdutoPage() {
       </div>
 
       {/* Product */}
-      <div style={{
+      <div className="prod-layout" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: 0,
         maxWidth: 1200,
         margin: '0 auto',
-        padding: 'clamp(2rem,5vw,5rem) clamp(1.5rem,5vw,5rem)',
+        padding: 'clamp(2rem,5vw,5rem) clamp(1rem,5vw,5rem)',
       }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .prod-layout { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
         {/* Image */}
         <div style={{ position: 'relative' }}>
           <div style={{

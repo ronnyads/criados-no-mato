@@ -33,7 +33,12 @@ export default function LookBuilderTeaser() {
         pointerEvents: 'none',
       }} />
 
-      <div className="container-max" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(3rem, 8vw, 8rem)', alignItems: 'center' }}>
+      <div className="container-max lbt-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(3rem, 8vw, 8rem)', alignItems: 'center' }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .lbt-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+          }
+        `}</style>
         {/* Left */}
         <div>
           <div className="text-label reveal" style={{ marginBottom: '1rem' }}>Monte. Compartilhe. Compre.</div>
