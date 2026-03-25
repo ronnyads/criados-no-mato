@@ -1,8 +1,8 @@
 /**
  * Compresses an image file in the browser using Canvas API before converting to Base64.
- * Keeps the file size small (preventing localStorage 5MB quota errors).
+ * Keeps the file size small (preventing localStorage and Supabase payload errors).
  */
-export async function compressImage(file: File, maxWidth = 1600, quality = 0.7): Promise<string> {
+export async function compressImage(file: File, maxWidth = 1000, quality = 0.55): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -31,8 +31,8 @@ export async function compressImage(file: File, maxWidth = 1600, quality = 0.7):
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Compress as JPEG/WebP
-        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        // Compress as WebP for smaller size
+        const compressedBase64 = canvas.toDataURL('image/webp', quality);
         resolve(compressedBase64);
       };
       img.onerror = () => reject(new Error('Failed to load image for compression'));

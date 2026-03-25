@@ -192,24 +192,24 @@ export function StoreConfigProvider({ children }: { children: React.ReactNode })
     loadConfig();
   }, []);
 
-  // Save to Supabase whenever config changes
+  // Save to Supabase whenever config changes with a Debounce
   useEffect(() => {
     if (!isLoaded) return; // Prevent overwriting DB with DEFAULT_CONFIG before load
 
-    async function saveConfig() {
+    const delayDebounceFn = setTimeout(async () => {
       try {
         await supabase.from('store_configs').upsert({ id: 1, config });
       } catch (err) {
         console.error('Failed to save config to Supabase', err);
       }
-    }
-
-    saveConfig();
+    }, 1000); // 1 second debounce to prevent spamming the DB on keystrokes
 
     // Notify any iframes listening (for live preview in Admin Theme Editor)
     if (typeof window !== 'undefined') {
       window.postMessage({ type: 'CNM_CONFIG_UPDATE', config }, '*');
     }
+
+    return () => clearTimeout(delayDebounceFn);
   }, [config, isLoaded]);
 
   const updateConfig = useCallback((partial: Partial<StoreConfig>) => {
