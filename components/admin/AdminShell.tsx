@@ -20,13 +20,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <StoreConfigProvider>
       <div style={{
         display: showSidebar ? 'flex' : 'block',
-        minHeight: '100vh',
+        height: '100vh',
         fontFamily: 'Inter, DM Sans, system-ui, sans-serif',
         background: showSidebar ? '#F1F1F1' : '#0D0B08',
         color: '#111',
+        overflow: 'hidden',
       }}>
         {showSidebar && <AdminSidebar />}
-        <main style={{ flex: 1, overflow: 'auto' }}>
+        <main style={{ flex: 1, overflowY: 'auto', height: '100%' }}>
           {children}
         </main>
       </div>

@@ -2,14 +2,11 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-
-const HERO_SLIDES = [
-  { tag: 'Lançamento', title: 'Vida de\nCowboy', sub: 'Identidade que nasce no campo, estilo que vai além.' },
-  { tag: 'Destaque', title: 'The\nBlack', sub: 'Minimalismo cru. Zero concessões.' },
-  { tag: 'Coleção', title: 'Criados\nno Mato', sub: 'Bonés feitos pra quem não precisa se explicar.' },
-];
+import { useStoreConfig } from '@/context/StoreConfigContext';
 
 export default function Hero() {
+  const { config } = useStoreConfig();
+  const slides = config.heroSlides;
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -18,7 +15,7 @@ export default function Hero() {
     if (animating) return;
     setAnimating(true);
     setTimeout(() => {
-      setCurrent(c => (c + 1) % HERO_SLIDES.length);
+      setCurrent(c => (c + 1) % slides.length);
       setAnimating(false);
     }, 600);
   };
@@ -26,9 +23,9 @@ export default function Hero() {
   useEffect(() => {
     intervalRef.current = setInterval(next, 5000);
     return () => clearInterval(intervalRef.current!);
-  }, []);
+  }, [slides.length]);
 
-  const slide = HERO_SLIDES[current];
+  const slide = slides[current] ?? slides[0];
 
   return (
     <section style={{
@@ -160,7 +157,7 @@ export default function Hero() {
         gap: '0.5rem',
         alignItems: 'center',
       }}>
-        {HERO_SLIDES.map((_, i) => (
+        {slides.map((_: unknown, i: number) => (
           <button
             key={i}
             onClick={() => { setAnimating(true); setTimeout(() => { setCurrent(i); setAnimating(false); }, 500); }}
