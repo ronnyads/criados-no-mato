@@ -206,6 +206,11 @@ export function StoreConfigProvider({ children }: { children: React.ReactNode })
 
     // Notify any iframes listening (for live preview in Admin Theme Editor)
     if (typeof window !== 'undefined') {
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(iframe => {
+        iframe.contentWindow?.postMessage({ type: 'CNM_CONFIG_UPDATE', config }, '*');
+      });
+      // Also notify self just in case
       window.postMessage({ type: 'CNM_CONFIG_UPDATE', config }, '*');
     }
 
