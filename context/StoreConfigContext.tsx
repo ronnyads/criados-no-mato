@@ -1,5 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export interface HeroSlide {
   tag: string;
@@ -172,30 +173,44 @@ const StoreConfigContext = createContext<StoreConfigContextType | null>(null);
 
 export function StoreConfigProvider({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<StoreConfig>(DEFAULT_CONFIG);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from Supabase on mount
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setConfig({ ...DEFAULT_CONFIG, ...parsed });
+    async function loadConfig() {
+      try {
+        const { data, error } = await supabase.from('store_configs').select('config').eq('id', 1).single();
+        if (data?.config) {
+          setConfig({ ...DEFAULT_CONFIG, ...data.config });
+        }
+      } catch (err) {
+        console.error('Failed to load store config', err);
+      } finally {
+        setIsLoaded(true);
       }
-    } catch {
-      // ignore
     }
+    loadConfig();
   }, []);
 
-  // Save to localStorage whenever config changes
+  // Save to Supabase whenever config changes
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-      // Notify any iframes listening (for live preview)
-      window.postMessage({ type: 'CNM_CONFIG_UPDATE', config }, '*');
-    } catch {
-      // ignore
+    if (!isLoaded) return; // Prevent overwriting DB with DEFAULT_CONFIG before load
+
+    async function saveConfig() {
+      try {
+        await supabase.from('store_configs').upsert({ id: 1, config });
+      } catch (err) {
+        console.error('Failed to save config to Supabase', err);
+      }
     }
-  }, [config]);
+
+    saveConfig();
+
+    // Notify any iframes listening (for live preview in Admin Theme Editor)
+    if (typeof window !== 'undefined') {
+      window.postMessage({ type: 'CNM_CONFIG_UPDATE', config }, '*');
+    }
+  }, [config, isLoaded]);
 
   const updateConfig = useCallback((partial: Partial<StoreConfig>) => {
     setConfig(prev => ({ ...prev, ...partial }));
