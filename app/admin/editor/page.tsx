@@ -150,7 +150,7 @@ export default function ThemeEditorPage() {
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', padding: '0 0.75rem', borderBottom: '1px solid #F0F0F0', overflowX: 'auto', gap: 0 }}>
+        <div style={{ display: 'flex', padding: '0 0.75rem', borderBottom: '1px solid #F0F0F0', overflowX: 'auto', gap: 0, flexShrink: 0 }}>
           {TABS.map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               padding: '0.65rem 0.65rem',
@@ -163,7 +163,7 @@ export default function ThemeEditorPage() {
         </div>
 
         {/* Tab Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', minHeight: 0 }}>
 
           {/* ── HERO ─────────────────────── */}
           {tab === 'Hero' && (
