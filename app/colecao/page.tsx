@@ -22,7 +22,7 @@ export default function ColecaoPage() {
     return () => observer.disconnect();
   }, [filtered]);
 
-  const handleAdd = (e: React.MouseEvent, product: typeof products[0]) => {
+  const handleAdd = (e: React.MouseEvent, product: Parameters<typeof add>[0]) => {
     e.preventDefault();
     add(product);
     toast.success(`${product.name} adicionado!`);
