@@ -138,7 +138,7 @@ export default function ThemeEditorPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100%', overflow: 'hidden', background: '#F5F5F5' }}>
+    <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden', background: '#F5F5F5' }}>
       {/* ─── Left Panel ────────────────────────────────────── */}
       <div style={{
         width: 340,

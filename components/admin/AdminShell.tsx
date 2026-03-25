@@ -27,7 +27,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         overflow: 'hidden',
       }}>
         {showSidebar && <AdminSidebar />}
-        <main style={{ flex: 1, overflowY: 'auto', height: '100%' }}>
+        <main style={{ flex: 1, overflowY: 'scroll', minWidth: 0 }}>
           {children}
         </main>
       </div>

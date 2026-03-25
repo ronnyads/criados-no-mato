@@ -38,6 +38,21 @@ export default function Hero() {
       overflow: 'hidden',
       background: '#0D0B08',
     }}>
+      {/* Hero background image (if uploaded via admin) */}
+      {config.heroImage && (
+        <img
+          src={config.heroImage}
+          alt=""
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            pointerEvents: 'none',
+            opacity: 0.55,
+          }}
+        />
+      )}
       {/* Background gradient layers */}
       <div style={{
         position: 'absolute', inset: 0,

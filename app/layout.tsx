@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import PublicOnly from "@/components/PublicOnly";
 import Header from "@/components/Header";
 import CustomCursor from "@/components/CustomCursor";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -39,24 +40,33 @@ export default function RootLayout({
         <CartProvider>
           <StoreConfigProvider>
             <ConfigReceiver />
-            <PageLoader />
-            <CustomCursor />
-            <SmoothScroll>
-              <Header />
-              <main>{children}</main>
-              <Toaster
-                position="bottom-center"
-                toastOptions={{
-                  style: {
-                    background: "#1A1612",
-                    color: "#F5EDD8",
-                    border: "1px solid rgba(200,146,42,0.3)",
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "0.875rem",
-                  },
-                }}
-              />
-            </SmoothScroll>
+
+            {/* Public-only effects (hidden on /admin) */}
+            <PublicOnly>
+              <PageLoader />
+              <CustomCursor />
+              <SmoothScroll>
+                <Header />
+                <main>{children}</main>
+                <Toaster
+                  position="bottom-center"
+                  toastOptions={{
+                    style: {
+                      background: "#1A1612",
+                      color: "#F5EDD8",
+                      border: "1px solid rgba(200,146,42,0.3)",
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "0.875rem",
+                    },
+                  }}
+                />
+              </SmoothScroll>
+            </PublicOnly>
+
+            {/* Admin pages — bare, no effects, no wrapper */}
+            <PublicOnly invert>
+              {children}
+            </PublicOnly>
           </StoreConfigProvider>
         </CartProvider>
       </body>
