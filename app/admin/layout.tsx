@@ -1,7 +1,5 @@
-import { StoreConfigProvider } from '@/context/StoreConfigContext';
 import type { Metadata } from 'next';
-import '../globals.css';
-import AdminSidebar from '@/components/admin/AdminSidebar';
+import AdminShell from '@/components/admin/AdminShell';
 
 export const metadata: Metadata = {
   title: 'Admin — Criados no Mato',
@@ -10,17 +8,16 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
-      <body style={{ margin: 0, fontFamily: 'Inter, DM Sans, system-ui, sans-serif', background: '#F1F1F1', color: '#111' }}>
-        <StoreConfigProvider>
-          <div style={{ display: 'flex', minHeight: '100vh' }}>
-            <AdminSidebar />
-            <main style={{ flex: 1, overflow: 'auto' }}>
-              {children}
-            </main>
-          </div>
-        </StoreConfigProvider>
-      </body>
-    </html>
+    <>
+      {/* Override public site styles in admin */}
+      <style>{`
+        body { background: #0D0B08 !important; }
+        /* Disable grain and cursor effects inside admin */
+        body::after { display: none !important; }
+        .custom-cursor, .cursor-dot { display: none !important; }
+      `}</style>
+      <AdminShell>{children}</AdminShell>
+    </>
   );
 }
+
