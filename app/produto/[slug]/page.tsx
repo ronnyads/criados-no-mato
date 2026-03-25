@@ -1,3 +1,4 @@
+'use client';
 import { useParams, notFound } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useStoreConfig } from '@/context/StoreConfigContext';
